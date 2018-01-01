@@ -1,0 +1,4 @@
+﻿  HangmanPage.cpp
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(18): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+  HangmanPage.vcxproj -> C:\Users\Erfan Abedi\documents\visual studio 2017\Projects\HangmanPage\x64\Debug\HangmanPage.exe
+  HangmanPage.vcxproj -> C:\Users\Erfan Abedi\documents\visual studio 2017\Projects\HangmanPage\x64\Debug\HangmanPage.pdb (Partial PDB)

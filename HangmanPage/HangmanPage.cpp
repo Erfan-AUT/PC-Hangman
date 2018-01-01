@@ -4,18 +4,70 @@
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
+#include <limits>
 #include <string>
 #include <vector>
+#include <Windows.h>
 
 using namespace std;
 
-ifstream& GotoLine(ifstream &file, unsigned int num) 
+COORD GetConsoleCursorPosition(HANDLE hConsoleOutput)
 {
-	file.seekg(std::ios::beg);
-	for (int i = 0; i < num - 1; ++i) {
-		file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	CONSOLE_SCREEN_BUFFER_INFO cbsi;
+	if (GetConsoleScreenBufferInfo(hConsoleOutput, &cbsi))
+	{
+		return cbsi.dwCursorPosition;
 	}
-	return file;
+	else
+	{
+		// The function failed. Call GetLastError() for details.
+		COORD invalid = { 0, 0 };
+		return invalid;
+	}
+}
+
+BOOL setxy(int x, int y)
+{
+	COORD c = { x,y };
+	return SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
+}
+
+void DrawRect(int x, int y, int width, int height, int curPosX = 0, int curPosY = 0)
+{
+	setxy(x, y); cout << char(201);
+	for (int i = 1; i < width; i++)
+		cout << char(205);
+	cout << char(187);
+	setxy(x, height + y);
+	cout << char(200);
+	for (int i = 1; i < width; i++)
+		cout << char(205);
+	cout << char(188);
+	for (int i = y + 1; i < height + y; i++)
+	{
+		setxy(x, i);
+		cout << char(186);
+		setxy(x + width, i);
+		cout << char(186);
+	}
+	setxy(curPosX, curPosY);
+}
+
+void DrawingTheGuy(short chances)
+{
+
+}
+
+void ReadNthLine(string &line, ifstream &file, int n)
+{
+	int b = 0; char c;
+	while (b != n - 1)
+	{
+		c = file.get();
+		if (c == '\n')
+			b++;
+	}
+	file >> line;
 }
 
 int main()
@@ -23,7 +75,8 @@ int main()
 	string playerName, line, topicsListAddress = "AVAILABLE_TOPICS.txt", selectedTopicAddress;
 	cout << "Enter your name:" << endl;
 	cin >> playerName;
-	char gameType; int showcounter = 1, realcounter = 0, whichgamenumber;
+	char gameType;
+	int showCounter = 1, realCounter = 0, whichTopicNumber;
 	cout << "Type r for resuming your previous game, n for playing a new game" << endl;
 	cin >> gameType;
 	while ((gameType != 'r') || (gameType != 'c'))
@@ -36,12 +89,11 @@ int main()
 	while (!listOfTopics.eof())
 	{
 		getline(listOfTopics, line);
-		cout << showcounter << ":  " << line << endl;
-		showcounter++;
+		cout << showCounter << ":  " << line << endl;
+		showCounter++;
 	}
-	cin >> whichgamenumber;
-	GotoLine(listOfTopics, showcounter);
-	listOfTopics >> selectedTopicAddress;
+	cin >> whichTopicNumber;
+	ReadNthLine(selectedTopicAddress, listOfTopics, whichTopicNumber);
 	ifstream selectedTopicFile(selectedTopicAddress);
 	vector <string> includedWords;
 	while (!selectedTopicFile.eof())
@@ -49,6 +101,16 @@ int main()
 		getline(selectedTopicFile, line);
 		includedWords.push_back(line);
 	}
+	int randomWordNumber = rand() % includedWords.size();
+	cout << endl << "Okay! Game will start in 3..2.." << endl;
+	system("cls");
+	string currentWord = includedWords[randomWordNumber];
+	includedWords.erase(includedWords.begin() + randomWordNumber);
+	cout << "Now, the word consists of these letters, are you gonna be able to find them?" << endl << "  ";
+	for (int i = 0; i < currentWord.length(); i++)
+		cout << "_ ";
+	cout << endl << endl << "Now, LET THE GAMES BEGIN!" << endl;
+
     return 0;
 }
 
