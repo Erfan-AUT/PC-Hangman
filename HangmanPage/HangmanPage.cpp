@@ -1,65 +1,152 @@
-// HangmanPage.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
+#include <cstdlib>
+#include <cstdio>
 #include <Windows.h>
-#include <ctime>
+#include <time.h>
 
-using namespace std;
+static const int CHARMAX = 1000;
+static const char* TOPICSLIST = "AVAILABLE_TOPICS.TXT";
 
 bool didGiveUpOnTheGame = 0;
-string usedTopicAddress = "";
+char* usedTopicAddress = "";
 
-// The Way this program saves player data is as follows. in the file of playername.txt we have:
-// FirstLine : Previous Score.
-// SecondLine : Formerly Played Subjects by name.
+struct StringNode {
+	char* string;
+	StringNode* next;
+};
 
-COORD GetConsoleCursorPosition(HANDLE hConsoleOutput)
-{
-	CONSOLE_SCREEN_BUFFER_INFO cbsi;
-	if (GetConsoleScreenBufferInfo(hConsoleOutput, &cbsi))
-		return cbsi.dwCursorPosition;
+StringNode *CreateStringNode(char line[]) {
+	struct StringNode * nn;
+	nn = (StringNode *)malloc(sizeof(StringNode));
+	nn->string = strcpy(nn->string, line);
+	nn->next = NULL;
+	return nn;
+}
+
+void AddStringNodeBottom(char* val, StringNode *head) {
+
+	StringNode *newStringNode = (StringNode*)malloc(sizeof(StringNode));
+	newStringNode->string = val;
+	newStringNode->next = NULL;
+	if (head->next == NULL)
+		head->next = newStringNode;
 	else
 	{
-		// The function failed. Call GetLastError() for details.
-		COORD invalid = { 0, 0 };
-		return invalid;
+		StringNode *current = head;
+		for (; current->next != NULL; current = current->next);
+		current->next = newStringNode;
 	}
 }
 
-BOOL setxy(short x, short y)
+StringNode* GenerateSubjectsSlashWords(char* fileName)
 {
-	COORD c = { x,y };
-	return SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
-}
-
-void DrawRect(int x, int y, int width, int height)
-{
-	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	COORD xy = GetConsoleCursorPosition(h);
-	short curPosX = xy.X, curPosY = xy.Y;
-	setxy(x, y); cout << char(201);
-	for (int i = 1; i < width; i++)
-		cout << char(205);
-	cout << char(187);
-	setxy(x, height + y);
-	cout << char(200);
-	for (int i = 1; i < width; i++)
-		cout << char(205);
-	cout << char(188);
-	for (int i = y + 1; i < height + y; i++)
+	StringNode* maind = (StringNode*)malloc(sizeof(StringNode));
+	maind->next = NULL;
+	maind->string = "";
+	StringNode* currd = (StringNode*)malloc(sizeof(StringNode));
+	FILE * file = fopen(fileName, "r");
+	char line[1000];
+	bool i = 0;
+	while (fgets(line, CHARMAX, file) != NULL)
 	{
-		setxy(x, i);
-		cout << char(186);
-		setxy(x + width, i);
-		cout << char(186);
+		strtok(line, "\n");
+		int t = strlen(line);
+		if (!i)
+		{
+			char* q = (char*)malloc(sizeof(char*));
+			strcpy(q, line);
+			maind->string = q;
+		}
+		else
+		{
+			char* q = (char*)malloc(sizeof(char*));
+			strcpy(q, line);
+			AddStringNodeBottom(q, maind);
+		}
+		i++;
 	}
-	setxy(curPosX, curPosY);
+	return maind;
+}
+
+bool SearchInsideTheStringNode(char* searchee, StringNode* searched)
+{
+	StringNode *current = searched;
+	for (; current->next != NULL; current = current->next)
+		if (!strcmp(current->string, searchee))
+			return 1;
+	if (!strcmp(current->string, searchee))
+		return 1;
+	return 0;
+}
+
+StringNode* RemoveElementFromStringNode(char* element, StringNode *current)
+{
+	if (current == NULL)
+		return NULL;
+	if (!strcmp(current->string, element))
+	{
+		StringNode *tempNextP;
+		tempNextP = current->next;
+		free(current);
+		return tempNextP;
+	}
+	current->next = RemoveElementFromStringNode(element, current->next);
+	return current;
+}
+
+StringNode* GenerateUnplayedSubjects(char* playerName, char gameType)
+{
+	StringNode *gonnaReturn;
+	char* topicsListAddress = "AVAILABLE_TOPICS.txt";
+	char line[CHARMAX], c;
+	int showCounter = 1, totalScore, topicRecord;
+	FILE* listOfTopics;
+	listOfTopics = fopen(topicsListAddress, "r");
+	if (gameType == 'n')
+	{
+		while (fscanf(listOfTopics, "%s", line) > 0)
+		{
+			printf("%d %s", showCounter, line);
+			AddStringNodeBottom(line, gonnaReturn);
+			showCounter++;
+		}
+	}
+	if (gameType == 'r')
+	{
+		FILE* playerFile = fopen(playerName, "r");
+		fscanf(playerFile, "%d", &totalScore);
+		while (fscanf(playerFile, "%s %d", line, &topicRecord) > 0)
+		{
+			bool bl = SearchInsideTheStringNode(line, gonnaReturn);
+			if (bl)
+				gonnaReturn = RemoveElementFromStringNode(line, gonnaReturn);
+			else
+				printf("%d : %s", showCounter, line);
+			showCounter++;
+		}
+	}
+	return gonnaReturn;
+}
+
+int GetLinkedListSize(StringNode * head)
+{
+	int w = 1;
+	for (StringNode * current = head; current->next != NULL; current = current->next)
+		w++;
+	return w;
+}
+
+char * ReturnNthLinkedListNumber(StringNode * head, int n)
+{
+	int w = 1;
+	StringNode * current;
+	for (current = head; current->next != NULL; current = current->next)
+	{
+		if (w == n)
+			return current->string;
+		w++;
+	}
+	return current->string;
 }
 
 void DrawingTheGuyPlusWrongGuesses(short numberOfWrongGuesses)
@@ -67,104 +154,48 @@ void DrawingTheGuyPlusWrongGuesses(short numberOfWrongGuesses)
 
 }
 
-void ReadNthLine(string &line, ifstream &file, int n)
+char* PlayOneSubjectUntilItsDone(char *playerName, char &gameType, StringNode* includedWords, int* totalScore1)
 {
-	int b = 0; char c;
-	while (b != n - 1)
-	{
-		c = file.get();
-		if (c == '\n')
-			b++;
-	}
-	file >> line;
-}
-
-int returnPreviousTotalScore(string playerName, char gameType)
-{
-	if (gameType == 'n')
-		return 0;
-	ifstream playerFile(playerName + ".txt");
-	int n;
-	playerFile >> n;
-	return n;
-}
-
-vector <string> GenerateUnplayedSubjects(string playerName, char gameType)
-{
-	vector <string> gonnaReturn;
-	string topicsListAddress = "AVAILABLE_TOPICS.txt", line;
-	int showCounter = 1, gonnaRemove = 0;
-	ifstream listOfTopics(topicsListAddress);
-	while (!listOfTopics.eof())
-	{
-		getline(listOfTopics, line);
-		gonnaReturn.push_back(line);
-	}
-	if (gameType == 'r')
-	{
-		ifstream playerFile(playerName + ".txt");
-		getline(playerFile, line);
-		while (!playerFile.eof())
-		{
-			playerFile >> line;
-			for (string topics : gonnaReturn)
-			{
-				if (line == topics)
-					gonnaReturn.erase(gonnaReturn.begin() + gonnaRemove);
-				gonnaRemove++;
-			}
-		}
-	}
-	for (string topics : gonnaReturn)
-	{
-		cout << showCounter << ":  " << topics << endl;
-		showCounter++;
-	}
-	return gonnaReturn;
-}
-
-void PlayOneSubjectUntilItsDone(string &playerName, char &gameType, vector<string> &includedWords, int &totalScore)
-{
-	string line;
-	int randomWordNumber = rand() % includedWords.size();
-	cout << endl << "Okay! Game will start in 3..2.." << endl;
+	int totalScore = *totalScore1;
+	char* line;
+	int randomWordNumber = rand() % GetLinkedListSize(includedWords);
+	printf("\n Okay! Game will start in 3..2.. \n");
 	system("cls");
-	string currentWord = includedWords[randomWordNumber];
-	includedWords.erase(includedWords.begin() + randomWordNumber);
-	cout << "Now, the word consists of these letters, are you gonna be able to find them?" << endl << "  ";
-	for (int i = 0; i < currentWord.length(); i++)
-		cout << "_ ";
-	cout << endl << endl << "Now, LET THE GAMES BEGIN!" << endl;
+	char* currentWord = ReturnNthLinkedListNumber(includedWords, randomWordNumber);
+	includedWords = RemoveElementFromStringNode(currentWord, includedWords);
+	printf("Now, the word consists of these letters, are you gonna be able to find them? \n ");
+	for (int i = 0; i < strlen(currentWord); i++) printf("_ ");
+	printf("\n \n Now, LET THE GAMES BEGIN! \n");
 	short numberOfWrongGuesses = 0, numberofRightGuesses = 0;
 	int currentScore = 0;
 	char currentGuess;
 	bool hasGuessedRight;
-	string whatToShow = "";
+	char* whatToShow = "";
 	while (numberOfWrongGuesses < 5)
 	{
 		hasGuessedRight = 0;
-		cout << "Enter your guess: ";
-		cin >> currentGuess;
+		printf("Enter your guess: ");
+		scanf("%c", &currentGuess);
 		if (currentGuess != 'Q')
 		{
-			for (char letter : currentWord)
+			for (int i = 0; i < strlen(currentWord); i++)
 			{
-				if (letter == currentGuess)
+				if (currentWord[i] == currentGuess)
 				{
-					whatToShow += letter + " ";
+					whatToShow += currentWord[i] + ' ';
 					hasGuessedRight = 1;
 					numberofRightGuesses++;
 				}
 				else
-					whatToShow += "_ ";
+					whatToShow += '_' + ' ';
 			}
-			cout << whatToShow << endl;
+			printf("%s \n", whatToShow);
 			if (!hasGuessedRight)
 				numberOfWrongGuesses++;
-			if (numberofRightGuesses == currentWord.length())
+			if (numberofRightGuesses == strlen(currentWord))
 			{
-				currentScore = 3 * currentWord.length() - numberOfWrongGuesses;
-				cout << "CONGRATS! YOU HAVE FIGURED THE WORD OUT!" << endl;
+				currentScore = 3 * strlen(currentWord) - numberOfWrongGuesses;
+				printf("CONGRATS! YOU HAVE FIGURED THE WORD OUT! \n");
 				break;
 			}
 			DrawingTheGuyPlusWrongGuesses(numberOfWrongGuesses);
@@ -176,33 +207,44 @@ void PlayOneSubjectUntilItsDone(string &playerName, char &gameType, vector<strin
 		}
 	}
 	totalScore += currentScore;
+	return currentWord;
 }
 
-double PlayCalcScoreOfOneSubject(string playerName, char gameType)
+int returnPreviousTotalScore(char* playerName, char gameType)
+{
+	if (gameType == 'n')
+		return 0;
+	FILE* playerFile;
+	playerFile = fopen(playerName, "r");
+	int n;
+	fscanf(playerFile, "%d", &n);
+	return n;
+}
+
+double PlayCalcScoreOfOneSubject(char* playerName, char gameType)
 {
 	time_t starTimer = time(0);
-	string line, selectedTopicAddress, checkNotQ;
-	cout << "Please choose the number of one of the following subjects:" << endl;
-	vector <string> listOfUnplayedSubjects = GenerateUnplayedSubjects(playerName, gameType);
+	char* line, *selectedTopicAddress, *checkNotQ;
+	printf("Please choose the number of one of the following subjects: \n");
+	StringNode* listOfUnplayedSubjects = GenerateUnplayedSubjects(playerName, gameType);
 	int whichTopicNumber;
-	cin >> checkNotQ;
+	scanf("%s", &checkNotQ);
 	if (checkNotQ != "Q")
 	{
-		stringstream sCheckNotQ(checkNotQ);
-		sCheckNotQ >> whichTopicNumber;
-		selectedTopicAddress = listOfUnplayedSubjects[whichTopicNumber];
+		whichTopicNumber = atoi(checkNotQ);
+		selectedTopicAddress = ReturnNthLinkedListNumber(listOfUnplayedSubjects, whichTopicNumber);
 		usedTopicAddress = selectedTopicAddress;
-		listOfUnplayedSubjects.clear();
-		ifstream selectedTopicFile(selectedTopicAddress);
-		vector <string> includedWords;
-		while (!selectedTopicFile.eof())
-		{
-			selectedTopicFile >> line;
-			includedWords.push_back(line);
-		}
+		free(listOfUnplayedSubjects);
+		FILE * selectedTopicFile = fopen(selectedTopicAddress, "r");
+		StringNode * includedWords;
+		while (fscanf(selectedTopicFile, "%s", line) > 0)
+			AddStringNodeBottom(line, includedWords);
 		int totalScore = returnPreviousTotalScore(playerName, gameType);
-		while (!includedWords.empty())
-			PlayOneSubjectUntilItsDone(playerName, gameType, includedWords, totalScore);
+		while (includedWords != NULL)
+		{
+			char* currentWord = PlayOneSubjectUntilItsDone(playerName, gameType, includedWords, &totalScore);
+			includedWords = RemoveElementFromStringNode(currentWord, includedWords);
+		}
 		//ReadNthLine(selectedTopicAddress, listOfTopics, whichTopicNumber);
 		time_t endTimer = time(0);
 		double finalScore = (double)(totalScore / difftime(endTimer, starTimer));
@@ -220,43 +262,44 @@ void SavingShit()
 
 }
 
-void GeneralGamePlay(string playerName, char gameType)
+void GeneralGamePlay(char* playerName, char gameType)
 {
+	playerName += '.';
+	playerName += 't';
+	playerName += 'x';
+	playerName += 't';
+	playerName += '.';
 	do {
 		double totalScore = PlayCalcScoreOfOneSubject(playerName, gameType);
 		if (gameType == 'r')
 		{
-			ofstream playerFile;
-			playerFile.open(playerName + ".txt", ios_base::app);
-			playerFile << usedTopicAddress;
+			FILE * playerFile = fopen(playerName, "a");
+			usedTopicAddress += '\n';
+			fprintf(playerFile, "%s", usedTopicAddress);
+			usedTopicAddress -= '\n';
 		}
 		else
 		{
 			// Needs a full eval when it's specified.
 		}
-		cout << "Here's your total score on this subject: " << totalScore << endl << "Do you wish to continue? 1 for yes / 0 for no: ";
-		cin >> didGiveUpOnTheGame;
+		printf("Here's your total score on this subject: %d \n Do you wish to continue? 1 for yes / 0 for no: ", totalScore);
+		scanf("%d", didGiveUpOnTheGame);
 	} while (!didGiveUpOnTheGame);
-	
-
 }
 
 int main()
 {
-	string playerName;
-	cout << "Enter your name:" << endl;
-	cin >> playerName;
+	char* playerName;
+	scanf("Enter your name: %s \n", playerName);
 	char gameType;
 	if (playerName == "Q")
 		return 0;
-	cout << "Type r for resuming your previous game, n for playing a new game" << endl;
-	cin >> gameType;
+	scanf("Type r for resuming your previous game, n for playing a new game \n %c", gameType);
 	if (gameType != 'Q')
 	{
 		while ((gameType != 'r') || (gameType != 'c'))
 		{
-			cout << "Wrong input, please specify your orders again." << endl;
-			cin >> gameType;
+			scanf("Wrong input, please specify your orders again. \n %c", gameType);
 			if (gameType == 'Q')
 			{
 				didGiveUpOnTheGame = 1;
@@ -265,6 +308,5 @@ int main()
 		}
 	}
 	//currentScore = 0; 
-    return 0;
+	return 0;
 }
-
