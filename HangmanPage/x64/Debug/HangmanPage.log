@@ -1,4 +1,66 @@
 ﻿  HangmanPage.cpp
-c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(18): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(21): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(53): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(47): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: see declaration of 'fopen'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(52): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(439): note: see declaration of 'strtok'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(57): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(63): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(104): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: see declaration of 'fopen'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(107): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1195): note: see declaration of 'fscanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(109): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(113): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1195): note: see declaration of 'fscanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(122): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: see declaration of 'fopen'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(123): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1195): note: see declaration of 'fscanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(124): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1195): note: see declaration of 'fscanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(101): warning C4101: 'c': unreferenced local variable
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(202): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(184): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(166): warning C4101: 'line': unreferenced local variable
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(223): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: see declaration of 'fopen'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(225): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1195): note: see declaration of 'fscanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(237): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(244): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: see declaration of 'fopen'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(246): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1195): note: see declaration of 'fscanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(248): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(250): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1195): note: see declaration of 'fscanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(253): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(281): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(93): note: see declaration of 'strcat'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(286): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: see declaration of 'fopen'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(288): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: see declaration of 'fopen'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(291): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'double'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(292): warning C4477: 'scanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'int'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(292): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(300): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(305): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(311): warning C4477: 'scanf' : format string '%c' requires an argument of type 'char *', but variadic argument 1 has type 'int'
+c:\users\erfan abedi\documents\visual studio 2017\projects\hangmanpage\hangmanpage\hangmanpage.cpp(311): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
   HangmanPage.vcxproj -> C:\Users\Erfan Abedi\documents\visual studio 2017\Projects\HangmanPage\x64\Debug\HangmanPage.exe
   HangmanPage.vcxproj -> C:\Users\Erfan Abedi\documents\visual studio 2017\Projects\HangmanPage\x64\Debug\HangmanPage.pdb (Partial PDB)
