@@ -10,6 +10,15 @@ static char* TOPICSLIST = "AVAILABLE_TOPICS.TXT";
 bool didGiveUpOnTheGame = 0;
 char* usedTopicAddress = "";
 
+void gotoxy(int x, int y)
+{
+	static HANDLE h = NULL;
+	if (!h)
+		h = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD c = { x, y };
+	SetConsoleCursorPosition(h, c);
+}
+
 struct StringNode {
 	char* string;
 	StringNode* next;
@@ -191,9 +200,144 @@ SubjectNode* ReturnNthSubjectList(SubjectNode * head, int n)
 	return current;
 }
 
-void DrawingTheGuyPlusWrongGuesses(short numberOfWrongGuesses)
+void DrawingTheGuy(short numberOfWrongGuesses)
 {
-
+	int i = 70, j = 2;
+	gotoxy(i, j);
+	if (numberOfWrongGuesses < 5)
+	{
+		//Hairline is strong, bro.
+		gotoxy(i, j - 1);
+		for (int q = 0; q < 10; q++)
+			printf("%c", char(244));
+	}
+	if (numberOfWrongGuesses < 4) 
+	{
+		gotoxy(i, j);
+		// Draw the head
+		printf("%c", char(201));
+		for (int q = 0; q < 10; q++)
+			printf("%c", char(205));
+		printf("%c", char(187));
+		for (int q = 1; q < 7; q++)
+		{
+			gotoxy(i, j + q);
+			printf("%c", char(186));
+		}
+		gotoxy(i, j + 6);
+		printf("%c", char(200));
+		for (int q = 0; q < 10; q++)
+		{
+			if ((q == 2) || (q == 7))
+				printf("%c", char(203));
+			else
+				printf("%c", char(205));
+		}
+		printf("%c", char(188));
+		for (int q = 5; q < 10; q++)
+		{
+			gotoxy(i + 11, q - j);
+			printf("%c", char(186));
+		}
+		//Draw the face
+		gotoxy(i + 2, j + 1);
+		printf("%c", char(233));
+		gotoxy(i + 8, j + 1);
+		printf("%c", char(233));
+		gotoxy(i + 5, j + 2);
+		printf("%c", char(186));
+		gotoxy(i + 2, j + 4);
+		for (int t = 0; t < 7; t++)
+			printf("%c", char(176));
+		i += 6;
+		j += 7;
+	}
+	if (numberOfWrongGuesses < 3)
+	{
+		gotoxy(i - 3, j);
+		printf("%c", char(186));
+		gotoxy(i + 2, j);
+		printf("%c", char(186));
+		// Neck.
+		for (int t = -11; t < 12; t++)
+		{
+			gotoxy(i + t, j + 1);
+			if ((t == -3) || (t == 2))
+				printf("%c", char(202));
+			else
+				printf("%c", char(205));
+		}
+		printf("%c", char(187));
+		gotoxy(i - 11, j + 1);
+		printf("%c", char(201));
+		for (int q = 2; q < 10; q++)
+		{
+			gotoxy(i - 11, j + q);
+			if ((q == 3) || (q == 5))
+				printf("%c", char(185));
+			else
+				printf("%c", char(186));
+		}
+		gotoxy(i - 11, j + 9);
+		printf("%c", char(200));
+		for (int q = 0; q < 22; q++)
+		{
+			if ((q == 7) || (q == 14))
+				printf("%c", char(203));
+			else
+				printf("%c", char(205));
+		}
+		printf("%c", char(188));
+		for (int q = -8; q < -1; q++)
+		{
+			gotoxy(i + 12, j - q);
+			if ((q == -3) || (q == -5))
+				printf("%c", char(204));
+			else
+				printf("%c", char(186));
+		}
+		// Main body.
+		for (int q = 0; q < 6; q++)
+		{
+			gotoxy(i + 13 + q, j + 3);
+			printf("%c", char(205));
+			gotoxy(i + 13 + q, j + 5);
+			printf("%c", char(205));
+		}
+		for (int q = 0; q < 6; q++)
+		{
+			gotoxy(i - 17 + q, j + 3);
+			printf("%c", char(205));
+			gotoxy(i - 17 + q, j + 5);
+			printf("%c", char(205));
+		}
+		//Hands.
+		//Change i here.
+	}
+	if (numberOfWrongGuesses < 2)
+	{
+		gotoxy(i - 3, j + 10);
+		printf("%c", char(186));
+		gotoxy(i + 4, j + 10);
+		printf("%c", char(186));
+		gotoxy(i - 3, j + 11);
+		printf("%c", char(186));
+		gotoxy(i + 4, j + 11);
+		printf("%c", char(186));
+		gotoxy(i - 3, j + 12);
+		printf("%c", char(186));
+		gotoxy(i - 3, j + 13);
+		printf("%c", char(188));
+		gotoxy(i + 4, j + 12);
+		printf("%c", char(186));
+		gotoxy(i + 4, j + 13);
+		printf("%c", char(200));
+		//Legs
+	}
+	if (numberOfWrongGuesses < 1)
+	{
+		//Feet.
+	}
 }
 
 char* PlayOneSubjectUntilItsDone(char *playerName, char &gameType, StringNode* includedWords, double* totalScore1)
@@ -210,13 +354,17 @@ char* PlayOneSubjectUntilItsDone(char *playerName, char &gameType, StringNode* i
 	printf("\n \n Now, LET THE GAMES BEGIN! \n");
 	short numberOfWrongGuesses = 0, numberofRightGuesses = 0;
 	int currentScore = 0;
-	char currentGuess;
+	char currentGuess = ' ';
 	bool hasGuessedRight;
 	//char* whatToShow = "";
 	while (numberOfWrongGuesses < 5)
 	{
+		system("cls");
 		hasGuessedRight = 0;
-		printf("Enter your guess: ");
+		// Show current Status.
+		DrawingTheGuy(numberOfWrongGuesses);
+		gotoxy(0, 1);
+		printf("\n Enter your guess: ");
 		scanf(" %c", &currentGuess);
 		if (currentGuess != 'Q')
 		{
@@ -239,7 +387,7 @@ char* PlayOneSubjectUntilItsDone(char *playerName, char &gameType, StringNode* i
 				printf("CONGRATS! YOU HAVE FIGURED THE WORD OUT! \n");
 				break;
 			}
-			DrawingTheGuyPlusWrongGuesses(numberOfWrongGuesses);
+			DrawingTheGuy(numberOfWrongGuesses);
 		}
 		else
 		{
