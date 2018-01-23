@@ -8,7 +8,6 @@ static const int CHARMAX = 1000;
 static char* TOPICSLIST = "AVAILABLE_TOPICS.TXT";
 
 bool didGiveUpOnTheGame = 0;
-char* usedTopicAddress = "";
 
 void gotoxy(int x, int y)
 {
@@ -30,14 +29,6 @@ struct SubjectNode
 	double scoreOfSubject;
 	SubjectNode* next;
 };
-
-StringNode *CreateStringNode(char line[]) {
-	struct StringNode * nn;
-	nn = (StringNode *)malloc(sizeof(StringNode));
-	nn->string = strcpy(nn->string, line);
-	nn->next = NULL;
-	return nn;
-}
 
 void AddStringNodeBottom(char* val, StringNode *head) {
 
@@ -119,10 +110,24 @@ StringNode* RemoveElementFromStringNode(char* element, StringNode *current)
 	{
 		StringNode *tempNextP;
 		tempNextP = current->next;
-		free(current);
+		//free(current);
 		return tempNextP;
 	}
 	current->next = RemoveElementFromStringNode(element, current->next);
+	return current;
+}
+
+SubjectNode* RemoveElementFromSubjectNode(char* element, SubjectNode *current)
+{
+	if (current == NULL)
+		return NULL;
+	if (!strcmp(current->nameOfSubject, element))
+	{
+		SubjectNode *tempNextP;
+		tempNextP = current->next;
+		return tempNextP;
+	}
+	current->next = RemoveElementFromSubjectNode(element, current->next);
 	return current;
 }
 
@@ -130,38 +135,38 @@ StringNode* GenerateUnplayedSubjects(char* playerName, char gameType)
 {
 	StringNode *gonnaReturn = (StringNode*)malloc(sizeof(StringNode*));
 	char* topicsListAddress = TOPICSLIST;
-	char line[CHARMAX], c;
-	int showCounter = 1, totalScore, topicRecord;
-	FILE* listOfTopics;
-	listOfTopics = fopen(topicsListAddress, "r");
-	if (gameType == 'n')
+	char line[CHARMAX];
+	int showCounter = 1, totalScore;
+	double topicRecord;
+	FILE* listOfTopics = fopen(topicsListAddress, "r");
+	fscanf(listOfTopics, "%s", line);
+	char* q = (char*)malloc(sizeof(char*));
+	strcpy(q, line);
+	gonnaReturn->string = q;
+	gonnaReturn->next = NULL;
+	while (fscanf(listOfTopics, "%s", line) > 0)
 	{
-		fscanf(listOfTopics, "%s", line);
 		char* q = (char*)malloc(sizeof(char*));
 		strcpy(q, line);
-		gonnaReturn->string = q;
-		gonnaReturn->next = NULL;
-		printf("%d %s \n", showCounter, line);
-		while (fscanf(listOfTopics, "%s", line) > 0)
-		{
-			printf("%d %s \n", showCounter, line);
-			AddStringNodeBottom(line, gonnaReturn);
-			showCounter++;
-		}
+		AddStringNodeBottom(q, gonnaReturn);
 	}
 	if (gameType == 'r')
 	{
 		FILE* playerFile = fopen(playerName, "r");
-		fscanf(playerFile, "%d", &totalScore);
-		while (fscanf(playerFile, "%s %d", line, &topicRecord) > 0)
+		//fscanf(playerFile, "%d", &totalScore);
+		while (fscanf(playerFile, "%s %lf", line, &topicRecord) > 0)
 		{
-			bool bl = SearchInsideTheStringNode(line, gonnaReturn);
-			if (bl)
+			if (SearchInsideTheStringNode(line, gonnaReturn))
 				gonnaReturn = RemoveElementFromStringNode(line, gonnaReturn);
 			else
-				printf("%d : %s", showCounter, line);
 			showCounter++;
 		}
+	}
+	StringNode *gonnaPrint = gonnaReturn;
+	for (; gonnaPrint != NULL; gonnaPrint = gonnaPrint->next)
+	{
+		printf("%d: %s \n", showCounter, gonnaPrint->string);
+		showCounter++;
 	}
 	return gonnaReturn;
 }
@@ -178,7 +183,7 @@ char * ReturnNthLinkedListNumber(StringNode * head, int n)
 {
 	int w = 1;
 	StringNode * current;
-	for (current = head; current->next != NULL; current = current->next)
+	for (current = head; current!= NULL; current = current->next)
 	{
 		if (w == n)
 			return current->string;
@@ -191,7 +196,7 @@ SubjectNode* ReturnNthSubjectList(SubjectNode * head, int n)
 {
 	int w = 1;
 	SubjectNode * current;
-	for (current = head; current->next != NULL; current = current->next)
+	for (current = head; current != NULL; current = current->next)
 	{
 		if (w == n)
 			return current;
@@ -202,16 +207,17 @@ SubjectNode* ReturnNthSubjectList(SubjectNode * head, int n)
 
 void DrawingTheGuy(short numberOfWrongGuesses)
 {
-	int i = 70, j = 2;
+	int i = 70, j = 4, lastX, lastY;
 	gotoxy(i, j);
 	if (numberOfWrongGuesses < 5)
 	{
 		//Hairline is strong, bro.
 		gotoxy(i, j - 1);
-		for (int q = 0; q < 10; q++)
+		for (int q = 0; q < 12; q++)
 			printf("%c", char(244));
+		lastX = i; lastY = j;
 	}
-	if (numberOfWrongGuesses < 4) 
+	if (numberOfWrongGuesses < 4)
 	{
 		gotoxy(i, j);
 		// Draw the head
@@ -234,7 +240,7 @@ void DrawingTheGuy(short numberOfWrongGuesses)
 				printf("%c", char(205));
 		}
 		printf("%c", char(188));
-		for (int q = 5; q < 10; q++)
+		for (int q = 9; q < 14; q++)
 		{
 			gotoxy(i + 11, q - j);
 			printf("%c", char(186));
@@ -249,6 +255,7 @@ void DrawingTheGuy(short numberOfWrongGuesses)
 		gotoxy(i + 2, j + 4);
 		for (int t = 0; t < 7; t++)
 			printf("%c", char(176));
+		lastX = i + 5; lastY = j + 7;
 		i += 6;
 		j += 7;
 	}
@@ -311,8 +318,8 @@ void DrawingTheGuy(short numberOfWrongGuesses)
 			gotoxy(i - 17 + q, j + 5);
 			printf("%c", char(205));
 		}
+		lastX = i + 1; lastY = j + 10;
 		//Hands.
-		//Change i here.
 	}
 	if (numberOfWrongGuesses < 2)
 	{
@@ -326,33 +333,51 @@ void DrawingTheGuy(short numberOfWrongGuesses)
 		printf("%c", char(186));
 		gotoxy(i - 3, j + 12);
 		printf("%c", char(186));
-		gotoxy(i - 3, j + 13);
-		printf("%c", char(188));
 		gotoxy(i + 4, j + 12);
 		printf("%c", char(186));
-		gotoxy(i + 4, j + 13);
-		printf("%c", char(200));
+		lastX = i + 1; lastY = j + 13;
 		//Legs
 	}
 	if (numberOfWrongGuesses < 1)
 	{
-		//Feet.
+		gotoxy(i - 3, j + 13);
+		printf("%c", char(185));
+		gotoxy(i - 6, j + 14);
+		printf("%c%c%c%c", char(200), char(205), char(205), char(188));
+		gotoxy(i + 4, j + 12);
+		printf("%c", char(186));
+		gotoxy(i + 4, j + 13);
+		printf("%c", char(204));
+		gotoxy(i + 4, j + 14);
+		printf("%c%c%c%c", char(200), char(205), char(205), char(188));
+		gotoxy(i - 6, j + 13);
+		printf("%c%c%c", char(201), char(205), char(205));
+		gotoxy(i + 5, j + 13);
+		printf("%c%c%c", char(205), char(205), char(187));
+		lastX = i; lastY = j + 15;
+		//Feet
 	}
+
 }
 
-char* PlayOneSubjectUntilItsDone(char *playerName, char &gameType, StringNode* includedWords, double* totalScore1)
+char* PlayOneSubjectUntilItsDone(char *playerName, char gameType, StringNode* includedWords, double* totalScore)
 {
-	double totalScore = *totalScore1;
+	srand(time(0));
 	char* line;
-	int randomWordNumber = rand() % GetLinkedListSize(includedWords);
+	int randomWordNumber = rand() % GetLinkedListSize(includedWords) + 1;
 	printf("\n Okay! Game will start in 3..2.. \n");
 	system("cls");
 	char* currentWord = ReturnNthLinkedListNumber(includedWords, randomWordNumber);
-	includedWords = RemoveElementFromStringNode(currentWord, includedWords);
-	printf("Now, the word consists of these letters, are you gonna be able to find them? \n ");
-	for (int i = 0; i < strlen(currentWord); i++) printf("_ ");
-	printf("\n \n Now, LET THE GAMES BEGIN! \n");
-	short numberOfWrongGuesses = 0, numberofRightGuesses = 0;
+	char* showBiz = (char*)calloc(2 * strlen(currentWord), sizeof(char));
+	char* checkBiz = (char*)malloc(sizeof(char*));
+	strcpy(checkBiz, currentWord);
+	for (int i = 0; i < strlen(currentWord); i++)
+		checkBiz[i] = char(187);
+	for (int i = 0; i < strlen(currentWord); i++)
+		strcat(showBiz, "_ ");
+	printf("\n \n Now, LET THE GAME BEGIN! \n");
+	_sleep(500);
+	short numberOfWrongGuesses = 0;
 	int currentScore = 0;
 	char currentGuess = ' ';
 	bool hasGuessedRight;
@@ -361,33 +386,36 @@ char* PlayOneSubjectUntilItsDone(char *playerName, char &gameType, StringNode* i
 	{
 		system("cls");
 		hasGuessedRight = 0;
+		printf("Now, the word consists of these letters, are you gonna be able to find them? \n%s", showBiz);
 		// Show current Status.
 		DrawingTheGuy(numberOfWrongGuesses);
-		gotoxy(0, 1);
-		printf("\n Enter your guess: ");
+		gotoxy(0, 3);
+		printf("Enter your guess: ");
 		scanf(" %c", &currentGuess);
 		if (currentGuess != 'Q')
 		{
+			gotoxy(0, 1);
 			for (int i = 0; i < strlen(currentWord); i++)
 			{
 				if (currentWord[i] == currentGuess)
 				{
-					printf("%c ", currentGuess);
+					showBiz[2 * i] = currentGuess;
 					hasGuessedRight = 1;
-					numberofRightGuesses++;
+					if (i == strlen(currentWord) - 1)
+						hasGuessedRight = 1;
+					checkBiz[i] = currentGuess;
 				}
-				else
-					printf("_ ");
 			}
 			if (!hasGuessedRight)
 				numberOfWrongGuesses++;
-			if (numberofRightGuesses == strlen(currentWord))
+			if (!strcmp(checkBiz, currentWord))
 			{
 				currentScore = 3 * strlen(currentWord) - numberOfWrongGuesses;
+				gotoxy(0, 4);
 				printf("CONGRATS! YOU HAVE FIGURED THE WORD OUT! \n");
+				_sleep(500);
 				break;
 			}
-			DrawingTheGuy(numberOfWrongGuesses);
 		}
 		else
 		{
@@ -395,7 +423,7 @@ char* PlayOneSubjectUntilItsDone(char *playerName, char &gameType, StringNode* i
 			return 0;
 		}
 	}
-	totalScore += currentScore;
+	*totalScore += currentScore;
 	return currentWord;
 }
 
@@ -407,7 +435,25 @@ double returnPreviousTotalScore(char* playerName, char gameType)
 	playerFile = fopen(playerName, "r");
 	double n;
 	fscanf(playerFile, "%lf", &n);
+	fclose(playerFile);
 	return n;
+}
+
+void SavingShit(char* playerName, SubjectNode* stars)
+{
+	//Should test "a" with non-existent files. 
+	//Works just fine!
+	int n = 1;
+	FILE* playerFile = fopen(playerName, "a");
+	SubjectNode *current = (SubjectNode*)malloc(sizeof(SubjectNode*));
+	while (current != NULL)
+	{
+		current = ReturnNthSubjectList(stars, n);
+		if (current != NULL)
+			fprintf(playerFile, "%s   %lf\n", current->nameOfSubject, current->scoreOfSubject);
+		n++;
+	}
+	fclose(playerFile);
 }
 
 SubjectNode* PlayCalcScoreOfOneSubject(char* playerName, char gameType)
@@ -424,8 +470,6 @@ SubjectNode* PlayCalcScoreOfOneSubject(char* playerName, char gameType)
 	{
 		whichTopicNumber = atoi(checkNotQ);
 		selectedTopicAddress = ReturnNthLinkedListNumber(listOfUnplayedSubjects, whichTopicNumber);
-		usedTopicAddress = selectedTopicAddress;
-		//free(listOfUnplayedSubjects);
 		FILE * selectedTopicFile = fopen(selectedTopicAddress, "r");
 		StringNode * includedWords = (StringNode*)malloc(sizeof(StringNode));
 		fscanf(selectedTopicFile, "%s", line);
@@ -438,7 +482,7 @@ SubjectNode* PlayCalcScoreOfOneSubject(char* playerName, char gameType)
 			strcpy(q, line);
 			AddStringNodeBottom(q, includedWords);
 		}
-		double totalScore = returnPreviousTotalScore(playerName, gameType);
+		double totalScore = 0;
 		while (includedWords != NULL)
 		{
 			char* currentWord = PlayOneSubjectUntilItsDone(playerName, gameType, includedWords, &totalScore);
@@ -466,38 +510,45 @@ SubjectNode* PlayCalcScoreOfOneSubject(char* playerName, char gameType)
 	}
 }
 
-void SavingShit(char* playerName, SubjectNode* stars)
+void ClearShit(char* playerName, SubjectNode* stars)
 {
-	//Should test "a" with non-existent files. 
-	int n = 1;
-	FILE* playerFile = fopen(playerName, "a");
-	SubjectNode *current = stars;
-	while (current != NULL)
+	FILE* playerFile = fopen(playerName, "r");
+	int w = 1;
+	char line[CHARMAX];
+	double topicRecord;
+	SubjectNode * head = (SubjectNode*)malloc(sizeof(SubjectNode));
+	fscanf(playerFile, "%s %lf", line, &topicRecord);
+	head->nameOfSubject = (char*)malloc(sizeof(char*));
+	strcpy(head->nameOfSubject, line);
+	head->scoreOfSubject = topicRecord;
+	head->next = NULL;
+	while (fscanf(playerFile, "%s %lf", line, &topicRecord) > 0)
 	{
-		current = ReturnNthSubjectList(current, n);
-		fprintf(playerFile, "%s   %lf\n", current->nameOfSubject, current->scoreOfSubject);
-		n++;
+		char* q = (char*)malloc(sizeof(char*));
+		strcpy(q, line);
+		AddSubjectNodeBottom(q, topicRecord, head);
 	}
+	SubjectNode * current = (SubjectNode*)malloc(sizeof(SubjectNode));
+	for (current = head; current->next != NULL; current = current->next)
+		if (!strcmp(current->nameOfSubject,current->next->nameOfSubject))
+			head = RemoveElementFromSubjectNode(current->nameOfSubject, head);
+	SavingShit(playerName, head);
 }
+
+
 
 void GeneralGamePlay(char* playerName, char gameType)
 {
-	bool gonnaSave, numOfGames = 0;
+	int gonnaSave = 1, numOfGames = 1;
 	SubjectNode *allSubjects = (SubjectNode*)malloc(sizeof(SubjectNode*));
-	double totalScore;
+	char* line;
 	strcat(playerName, ".txt");
 	do {
-		FILE* playerFile;
-		if (gameType == 'r')
+		if (numOfGames == 1)
 		{
-			playerFile = fopen(playerName, "a");
-			fprintf(playerFile, "%s %s", usedTopicAddress, "  ");
-			fprintf(playerFile, "%lf %c", totalScore, '\n');
-		}
-		else
-			playerFile = fopen(playerName, "w");
-		if (!numOfGames)
 			allSubjects = PlayCalcScoreOfOneSubject(playerName, gameType);
+			allSubjects->next = NULL;
+		}
 		else
 		{
 			SubjectNode *temp = (SubjectNode*)malloc(sizeof(SubjectNode*));
@@ -506,15 +557,25 @@ void GeneralGamePlay(char* playerName, char gameType)
 		}
 		if (!didGiveUpOnTheGame)
 		{
-			printf("Here's your total score on this subject: %d \n Do you wish to continue? 1 for yes | 0 for no: ", totalScore);
-			scanf("%d", didGiveUpOnTheGame);
+			system("cls");
+			SubjectNode *temp = ReturnNthSubjectList(allSubjects, numOfGames);
+			printf("Here's your total score on this subject: %lf \n Do you wish to continue? 0 for yes | 1 for no: ",
+				ReturnNthSubjectList(allSubjects, numOfGames)->scoreOfSubject);
+			scanf(" %d", &didGiveUpOnTheGame);
+			if (!didGiveUpOnTheGame)
+				SavingShit(playerName, allSubjects);
 			numOfGames++;
 		}
 	} while (!didGiveUpOnTheGame);
-	printf("Do you wish to save the game? 1 for yes | 0 for no");
-	scanf("%d", gonnaSave);
+	remove(playerName);
+	printf("Do you wish to save the game? 1 for yes | 0 for no: ");
+	scanf(" %d", &gonnaSave);
 	if (gonnaSave)
+	{
 		SavingShit(playerName, allSubjects);
+		ClearShit(playerName, allSubjects);
+	}
+	return;
 }
 
 int main()

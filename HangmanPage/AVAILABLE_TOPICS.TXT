@@ -1,1 +1,3 @@
 mal.txt
+socal.txt
+gal.txt
